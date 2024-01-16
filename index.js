@@ -2,6 +2,7 @@ const express = require("express");
 const cors = require("cors");
 const mongoose = require ("mongoose");
 const authRoutes = require('./routes/authRoutes')
+const queryRoutes = require('./routes/queryRoutes');
 const cookieParser = require("cookie-parser");
 const app = express();
 const Joi = require('joi');
@@ -36,10 +37,17 @@ app.use(
     credentials:true,
    })
 );
+
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).send('Something went wrong!');
+});
+
 app.use(cookieParser());
 app.use(express.json());
 
 app.use("/",authRoutes);
+app.use("/query", queryRoutes);
 
 //Query
 app.get('/get-queries', async (req, res) => {
